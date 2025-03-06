@@ -18,7 +18,7 @@ const authSection = document.getElementById('authSection');
 const dashboardSection = document.getElementById('dashboardSection');
 const loginButton = document.getElementById('loginButton');
 const logoutButton = document.getElementById('logoutButton');
-const teacherNameElement = document.getElementById('teacherName');
+let teacherNameElement = document.getElementById('teacherName');
 
 // Register Student Elements
 const registerStudentBtn = document.getElementById('registerStudentBtn');
@@ -55,10 +55,10 @@ loginButton.addEventListener('click', async () => {
         const user = userCredential.user;
         
         // Fetch teacher details from Firestore
-        const teacherDoc = await db.collection('teachers').doc(user.uid).get();
+        const teacherDoc = await db.collection('teachers').doc(user.fullName).get();
         const teacherData = teacherDoc.data();
         
-        teacherNameElement.textContent = `Welcome, ${teacherData.name}`;
+        teacherNameElement.textContent = `Welcome, ${teacherDoc.name}`;
         
         authSection.classList.add('hidden');
         dashboardSection.classList.remove('hidden');
