@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All-Clear Tech - Education Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: white;
+            padding: 1rem 4rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 200px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        .logo span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0052cc;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #0052cc;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-outline {
+            border: 2px solid #0052cc;
+            background: transparent;
+            color: #0052cc;
+        }
+
+        .btn-primary {
+            background: #0052cc;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.2);
+        }
+
+        .hero {
+            padding: 8rem 4rem 4rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #fff 0%, #e6f0ff 100%);
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .hero-content {
+            flex: 1;
+            animation: fadeInLeft 1s ease-out;
+        }
+
+        .hero-image {
+            flex: 1;
+            animation: fadeInRight 1s ease-out;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 10px;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: #0052cc;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .features {
+            padding: 4rem;
+            background: white;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #0052cc;
+        }
+
+        .cards-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            color: #0052cc;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .card p {
+            color: #666;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 2rem;
+            }
+
+            .hero {
+                padding: 6rem 2rem 2rem;
+            }
+
+            .hero-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .features {
+                padding: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <img src="All-clear_tech-removebg-preview.png" alt="All-Clear Tech Logo">
+                <span>All-Clear Tech</span>
+            </a>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+               <a href="Authentication.html"> <button class="btn btn-outline">Sign In</button></a>
+                <button class="btn btn-primary">Sign Up</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Empowering Education, Ensuring Success</h1>
+                <p>"Education is not preparation for life; education is life itself." - John Dewey</p>
+                <a href="Authentication.html"> <button class="btn btn-primary">Start Your Journey</button></a> 
+            </div>
+            <div class="hero-image">
+                <img src="modern-3d-illustration-education-concept_145666-1739-removebg-preview.png" alt="Education illustration">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <h2>Our Features</h2>
+        <div class="cards-container">
+            <!-- AI Early Warning Card -->
+            <div class="card">
+                <img src="ai.jpg" alt="AI Warning System">
+                <h3>AI Early Warning</h3>
+                <p>Predictive analytics to identify at-risk students before they fall behind.</p>
+            </div>
+
+            <!-- Community Learning Hub Card -->
+            <div class="card">
+                <img src="5e74f6cadbb70b82b6ac9c3f_learning-hub-image.jpg" alt="Community Learning">
+                <h3>Community Learning Hub</h3>
+                <p>Connect with peers, share resources, and learn together in a supportive environment.</p>
+            </div>
+
+            <!-- Learning Hub Card -->
+            <div class="card">
+                <img src="feat-learninghub.jpg" alt="Learning Hub">
+                <h3>Learning Hub</h3>
+                <p>Personalized learning paths and resources tailored to your needs.</p>
+            </div>
+
+            <!-- Parental Control Card -->
+            <div class="card">
+                <img src="parental.png" alt="Parental Control">
+                <h3>Parental Control</h3>
+                <p>Keep parents involved with progress tracking and regular updates.</p>
+            </div>
+
+            <!-- Support App Card -->
+            <div class="card">
+                <img src="support.png" alt="Support App">
+                <h3>Support App</h3>
+                <p>24/7 support system to help students overcome academic challenges.</p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

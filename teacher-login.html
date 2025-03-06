@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dropout Monitoring - Teacher Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb, #90caf9);
+            background-image: url('/api/placeholder/1920/1080'),
+                            linear-gradient(135deg, #e3f2fd, #bbdefb, #90caf9);
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: overlay;
+        }
+        
+        .glass-container {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        .input-glass {
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .input-glass::placeholder {
+            color: rgba(107, 114, 128, 0.8);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="glass-container p-8 rounded-xl w-full max-w-md">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">Teacher Login</h1>
+        
+        <!-- Email Input -->
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-semibold mb-2" for="email">
+                Email Address
+            </label>
+            <input type="email" id="email" class="w-full px-4 py-3 rounded-lg input-glass text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter your email">
+        </div>
+
+        <!-- Password Input -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-semibold mb-2" for="password">
+                Password
+            </label>
+            <input type="password" id="password" class="w-full px-4 py-3 rounded-lg input-glass text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter your password">
+        </div>
+
+        <!-- Forgot Password -->
+        <div class="mb-6 text-right">
+            <a href="#" id="forgotPasswordLink" class="text-blue-600 hover:text-blue-700 text-sm font-medium">Forgot Password?</a>
+        </div>
+
+        <!-- Login Button -->
+        <button id="loginButton" class="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition duration-300 mb-4 font-semibold shadow-md">
+            Log in
+        </button>
+
+        <!-- Google Login -->
+        <button id="googleLoginButton" class="w-full bg-white py-3 rounded-lg hover:bg-gray-50 transition duration-300 flex items-center justify-center mb-6 font-semibold text-gray-700 shadow-md">
+            <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
+            </svg>
+            Log in with Google
+        </button>
+
+        <!-- Create Account Link -->
+        <p class="text-center text-gray-600">
+            Don't have an account? 
+            <a href="index.html" class="text-blue-600 hover:text-blue-700 font-semibold">Create account</a>
+        </p>
+
+        <!-- Status Message -->
+        <div id="statusMessage" class="mt-4 text-center text-sm font-medium hidden"></div>
+        
+        <!-- Password Reset Modal -->
+        <div id="resetPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg p-8 max-w-md w-full">
+                <h2 class="text-2xl font-bold mb-4">Reset Password</h2>
+                <p class="mb-4 text-gray-600">Enter your email address and we'll send you a link to reset your password.</p>
+                
+                <div class="mb-4">
+                    <input type="email" id="resetEmail" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Your email address">
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button id="cancelResetBtn" class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition">Cancel</button>
+                    <button id="sendResetBtn" class="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition">Send Reset Link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.6.10/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.6.10/firebase-auth-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.6.10/firebase-firestore-compat.min.js"></script>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCutyrVdAXgzDoGglHGD-j55AVzFjHR5eo",
+            authDomain: "allcleartech-11c44.firebaseapp.com",
+            projectId: "allcleartech-11c44",
+            storageBucket: "allcleartech-11c44.firebasestorage.app",
+            messagingSenderId: "746758569433",
+            appId: "1:746758569433:web:64a5db5c3123a758422dc8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // DOM elements
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginButton = document.getElementById('loginButton');
+        const googleLoginButton = document.getElementById('googleLoginButton');
+        const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+        const resetPasswordModal = document.getElementById('resetPasswordModal');
+        const resetEmail = document.getElementById('resetEmail');
+        const cancelResetBtn = document.getElementById('cancelResetBtn');
+        const sendResetBtn = document.getElementById('sendResetBtn');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Login with email and password
+        loginButton.addEventListener('click', function() {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            
+            if (!email || !password) {
+                showStatus('Please enter both email and password', 'error');
+                return;
+            }
+            
+            showStatus('Logging in...', 'info');
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Get the user
+                    const user = userCredential.user;
+                    
+                    // Check if user is a teacher
+                    return db.collection('users').doc(user.uid).get()
+                        .then((doc) => {
+                            if (doc.exists && doc.data().userType === 'teacher') {
+                                // Store user info in session
+                                sessionStorage.setItem('userEmail', user.email);
+                                sessionStorage.setItem('userType', 'teacher');
+                                sessionStorage.setItem('userId', user.uid);
+                                sessionStorage.setItem('fullName', doc.data().fullName || 'Teacher');
+                                
+                                showStatus('Login successful!', 'success');
+                                
+                                // Redirect to teacher page
+                                setTimeout(() => {
+                                    window.location.href = 'teacher.html';
+                                }, 1000);
+                            } else {
+                                // Not a teacher or account doesn't exist
+                                auth.signOut();
+                                showStatus('Access denied. Only teacher accounts can login here.', 'error');
+                            }
+                        });
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    
+                    if (errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password') {
+                        showStatus('Invalid email or password', 'error');
+                    } else {
+                        showStatus('Error: ' + errorMessage, 'error');
+                    }
+                    console.error(error);
+                });
+        });
+
+        // Login with Google
+        googleLoginButton.addEventListener('click', function() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            
+            showStatus('Connecting with Google...', 'info');
+            
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    // Get the user
+                    const user = result.user;
+                    
+                    // Check if user exists as a teacher
+                    return db.collection('users').doc(user.uid).get()
+                        .then((doc) => {
+                            if (doc.exists && doc.data().userType === 'teacher') {
+                                // User exists and is a teacher
+                                sessionStorage.setItem('userEmail', user.email);
+                                sessionStorage.setItem('userType', 'teacher');
+                                sessionStorage.setItem('userId', user.uid);
+                                sessionStorage.setItem('fullName', doc.data().fullName || user.displayName || 'Teacher');
+                                
+                                showStatus('Login successful!', 'success');
+                                
+                                // Redirect to teacher page
+                                setTimeout(() => {
+                                    window.location.href = 'teacher.html';
+                                }, 1000);
+                            } else {
+                                // User exists but is not a teacher or not found
+                                auth.signOut();
+                                showStatus('Access denied. Only teacher accounts can login here.', 'error');
+                            }
+                        });
+                })
+                .catch((error) => {
+                    const errorMessage = error.message;
+                    showStatus('Error: ' + errorMessage, 'error');
+                    console.error(error);
+                });
+        });
+
+        // Forgot password modal handling
+        forgotPasswordLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            resetPasswordModal.classList.remove('hidden');
+            // Pre-fill email if already entered
+            if (emailInput.value.trim()) {
+                resetEmail.value = emailInput.value.trim();
+            }
+        });
+
+        cancelResetBtn.addEventListener('click', function() {
+            resetPasswordModal.classList.add('hidden');
+        });
+
+        sendResetBtn.addEventListener('click', function() {
+            const email = resetEmail.value.trim();
+            
+            if (!email) {
+                showStatus('Please enter your email address', 'error');
+                return;
+            }
+            
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    resetPasswordModal.classList.add('hidden');
+                    showStatus('Password reset email sent. Please check your inbox.', 'success');
+                })
+                .catch((error) => {
+                    showStatus('Error: ' + error.message, 'error');
+                });
+        });
+
+        // Function to show status messages
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-blue-600');
+            
+            if (type === 'error') {
+                statusMessage.classList.add('text-red-600');
+            } else if (type === 'success') {
+                statusMessage.classList.add('text-green-600');
+            } else {
+                statusMessage.classList.add('text-blue-600');
+            }
+            
+            statusMessage.classList.remove('hidden');
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === resetPasswordModal) {
+                resetPasswordModal.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dropout Monitoring - Create Account</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb, #90caf9);
+            background-image: url('/api/placeholder/1920/1080'),
+                            linear-gradient(135deg, #e3f2fd, #bbdefb, #90caf9);
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: overlay;
+        }
+        
+        .glass-container {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        .input-glass {
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .input-glass::placeholder {
+            color: rgba(107, 114, 128, 0.8);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="glass-container p-8 rounded-xl w-full max-w-md">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">Create Account</h1>
+        
+        <!-- User Type Dropdown -->
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-semibold mb-2" for="userType">
+                Select User Type
+            </label>
+            <select id="userType" class="w-full px-4 py-3 rounded-lg input-glass text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option value="" disabled selected>Choose your role</option>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="parent">Parent</option>
+            </select>
+        </div>
+
+        <!-- Full Name Input -->
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-semibold mb-2" for="fullName">
+                Full Name
+            </label>
+            <input type="text" id="fullName" class="w-full px-4 py-3 rounded-lg input-glass text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter your full name">
+        </div>
+
+        <!-- Email Input -->
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-semibold mb-2" for="email">
+                Email Address
+            </label>
+            <input type="email" id="email" class="w-full px-4 py-3 rounded-lg input-glass text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter your email">
+        </div>
+
+        <!-- Password Input (Only visible for teachers) -->
+        <div id="passwordContainer" class="mb-6 hidden">
+            <label class="block text-gray-700 text-sm font-semibold mb-2" for="password">
+                Password
+            </label>
+            <input type="password" id="password" class="w-full px-4 py-3 rounded-lg input-glass text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Choose a password">
+        </div>
+
+        <!-- Confirm Password Input (Only visible for teachers) -->
+        <div id="confirmPasswordContainer" class="mb-8 hidden">
+            <label class="block text-gray-700 text-sm font-semibold mb-2" for="confirmPassword">
+                Confirm Password
+            </label>
+            <input type="password" id="confirmPassword" class="w-full px-4 py-3 rounded-lg input-glass text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Confirm your password">
+        </div>
+
+        <!-- Create Account Button -->
+        <button id="signupButton" class="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition duration-300 mb-4 font-semibold shadow-md">
+            Create Account
+        </button>
+
+        <!-- Google Signup -->
+        <button id="googleSignupButton" class="w-full bg-white py-3 rounded-lg hover:bg-gray-50 transition duration-300 flex items-center justify-center mb-6 font-semibold text-gray-700 shadow-md">
+            <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
+            </svg>
+            Sign up with Google
+        </button>
+
+        <!-- Login Link -->
+        <p class="text-center text-gray-600">
+            Already have an account? 
+            <a href="teacher-login.html" class="text-blue-600 hover:text-blue-700 font-semibold">Log in</a>
+        </p>
+
+        <!-- Status Message -->
+        <div id="statusMessage" class="mt-4 text-center text-sm font-medium hidden"></div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.6.10/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.6.10/firebase-auth-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.6.10/firebase-firestore-compat.min.js"></script>
+    
+    
+ <script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCutyrVdAXgzDoGglHGD-j55AVzFjHR5eo",
+        authDomain: "allcleartech-11c44.firebaseapp.com",
+        projectId: "allcleartech-11c44",
+        storageBucket: "allcleartech-11c44.firebasestorage.app",
+        messagingSenderId: "746758569433",
+        appId: "1:746758569433:web:64a5db5c3123a758422dc8"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // DOM elements
+    const userTypeSelect = document.getElementById('userType');
+    const fullNameInput = document.getElementById('fullName');
+    const emailInput = document.getElementById('email');
+    const passwordContainer = document.getElementById('passwordContainer');
+    const confirmPasswordContainer = document.getElementById('confirmPasswordContainer');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const signupButton = document.getElementById('signupButton');
+    const googleSignupButton = document.getElementById('googleSignupButton');
+    const statusMessage = document.getElementById('statusMessage');
+
+    // Show/hide password fields based on user type selection
+    userTypeSelect.addEventListener('change', function () {
+        const selectedUserType = this.value;
+        if (selectedUserType === 'teacher') {
+            passwordContainer.classList.remove('hidden');
+            confirmPasswordContainer.classList.remove('hidden');
+        } else {
+            passwordContainer.classList.add('hidden');
+            confirmPasswordContainer.classList.add('hidden');
+        }
+    });
+
+    // Function to show status messages with auto-clear option
+    function showStatus(message, type, autoClear = false) {
+        statusMessage.textContent = message;
+        statusMessage.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-blue-600');
+
+        if (type === 'error') {
+            statusMessage.classList.add('text-red-600');
+        } else if (type === 'success') {
+            statusMessage.classList.add('text-green-600');
+        } else {
+            statusMessage.classList.add('text-blue-600');
+        }
+
+        console.log("Status:", message, "Type:", type);
+
+        if (autoClear) {
+            setTimeout(() => {
+                statusMessage.textContent = "";
+                statusMessage.classList.add('hidden');
+            }, 3000); // Clears after 3 seconds
+        }
+    }
+
+    // Teacher signup function
+    async function teacherSignup(email, password, fullName) {
+        try {
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+
+            await db.collection('users').doc(user.uid).set({
+                fullName,
+                email,
+                userType: 'teacher',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // Set session data
+            sessionStorage.setItem('userEmail', user.email);
+            sessionStorage.setItem('userType', 'teacher');
+            sessionStorage.setItem('userId', user.uid);
+            sessionStorage.setItem('fullName', fullName);
+
+            showStatus('Account created successfully!', 'success', true);
+
+            // Redirect to Teacher dashboard
+            setTimeout(() => {
+                window.location.href = "Teacher.html";
+            }, 2000);
+
+        } catch (error) {
+            console.error("Error creating teacher account:", error);
+            showStatus('Error: ' + error.message, 'error', true);
+        }
+    }
+
+    // Student signup and login function
+    async function studentSignupOrLogin(email, fullName) {
+        try {
+            // Check if the email exists in the students collection
+            const studentQuery = await db.collection('students')
+                .where('email', '==', email)
+                .get();
+
+            if (!studentQuery.empty) {
+                // Student exists, proceed to student dashboard
+                const studentDoc = studentQuery.docs[0];
+                const studentData = studentDoc.data();
+
+                // Set session data
+                sessionStorage.setItem('userEmail', email);
+                sessionStorage.setItem('userType', 'student');
+                sessionStorage.setItem('userId', studentDoc.id);
+                sessionStorage.setItem('fullName', studentData.fullName || fullName);
+
+                showStatus('Logging in as student...', 'success', true);
+
+                // Redirect to Student dashboard
+                setTimeout(() => {
+                    window.location.href = "student-dashboard.html";
+                }, 2000);
+            } else {
+                // If student doesn't exist, create a new record
+                const newStudentRef = await db.collection('students').add({
+                    fullName,
+                    email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Set session data
+                sessionStorage.setItem('userEmail', email);
+                sessionStorage.setItem('userType', 'student');
+                sessionStorage.setItem('userId', newStudentRef.id);
+                sessionStorage.setItem('fullName', fullName);
+
+                showStatus('Student account created!', 'success', true);
+
+                // Redirect to Student dashboard
+                setTimeout(() => {
+                    window.location.href = "student-dashboard.html";
+                }, 2000);
+            }
+        } catch (error) {
+            console.error("Error processing student account:", error);
+            showStatus('Error: ' + error.message, 'error', true);
+        }
+    }
+
+    // Parent signup and login function
+    async function parentSignupOrLogin(email, fullName) {
+        try {
+            // Check if the email exists in the parents collection
+            const parentQuery = await db.collection('parents')
+                .where('email', '==', email)
+                .get();
+
+            if (!parentQuery.empty) {
+                // Parent exists, proceed to parent dashboard
+                const parentDoc = parentQuery.docs[0];
+                const parentData = parentDoc.data();
+
+                // Set session data
+                sessionStorage.setItem('userEmail', email);
+                sessionStorage.setItem('userType', 'parent');
+                sessionStorage.setItem('userId', parentDoc.id);
+                sessionStorage.setItem('fullName', parentData.fullName || fullName);
+
+                showStatus('Logging in as parent...', 'success', true);
+
+                // Redirect to Parent dashboard
+                setTimeout(() => {
+                    window.location.href = "parent-dashboard.html";
+                }, 2000);
+            } else {
+                // If parent doesn't exist, create a new record
+                const newParentRef = await db.collection('parents').add({
+                    fullName,
+                    email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Set session data
+                sessionStorage.setItem('userEmail', email);
+                sessionStorage.setItem('userType', 'parent');
+                sessionStorage.setItem('userId', newParentRef.id);
+                sessionStorage.setItem('fullName', fullName);
+
+                showStatus('Parent account created!', 'success', true);
+
+                // Redirect to Parent dashboard
+                setTimeout(() => {
+                    window.location.href = "parent-dashboard.html";
+                }, 2000);
+            }
+        } catch (error) {
+            console.error("Error processing parent account:", error);
+            showStatus('Error: ' + error.message, 'error', true);
+        }
+    }
+
+    // Main signup button event listener
+    signupButton.addEventListener('click', async function () {
+        const userType = userTypeSelect.value;
+        const fullName = fullNameInput.value.trim();
+        const email = emailInput.value.trim();
+
+        // Validate input
+        if (!userType || !fullName || !email) {
+            showStatus('All fields are required', 'error', true);
+            return;
+        }
+
+        // Different signup flow based on user type
+        switch (userType) {
+            case 'teacher':
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+
+                if (!password || password.length < 6 || password !== confirmPassword) {
+                    showStatus('Invalid password or mismatch', 'error', true);
+                    return;
+                }
+
+                await teacherSignup(email, password, fullName);
+                break;
+
+            case 'student':
+                await studentSignupOrLogin(email, fullName);
+                break;
+
+            case 'parent':
+                await parentSignupOrLogin(email, fullName);
+                break;
+
+            default:
+                showStatus('Invalid user type', 'error', true);
+        }
+    });
+</script>
+</body>
+</html>

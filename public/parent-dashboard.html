@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+        .parent-info {
+            display: flex;
+            align-items: center;
+        }
+        .parent-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .dashboard-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .btn {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-secondary {
+            background-color: #95a5a6;
+        }
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        .student-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #2ecc71;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .student-select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            flex-grow: 1;
+        }
+        .tab-navigation {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        .tab.active {
+            border-bottom-color: #3498db;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .attendance-card {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .attendance-percentage {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .chart-container {
+            height: 300px;
+            position: relative;
+            margin-top: 20px;
+        }
+        .chart-bar {
+            position: absolute;
+            bottom: 30px;
+            width: 40px;
+            background-color: #3498db;
+            border-radius: 5px 5px 0 0;
+            transition: height 0.5s;
+        }
+        .chart-bar:hover {
+            background-color: #2980b9;
+        }
+        .chart-label {
+            position: absolute;
+            bottom: 0;
+            text-align: center;
+            width: 40px;
+            font-size: 12px;
+        }
+        .chart-y-axis {
+            position: absolute;
+            left: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-right: 10px;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .chart-y-label {
+            border-top: 1px dashed #eee;
+            width: 100%;
+            text-align: right;
+            padding-right: 5px;
+        }
+        .marks-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .marks-table th, .marks-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .marks-table th {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+        .marks-table td.mark {
+            font-weight: bold;
+        }
+        .marks-table .good {
+            color: #2ecc71;
+        }
+        .marks-table .average {
+            color: #f39c12;
+        }
+        .marks-table .poor {
+            color: #e74c3c;
+        }
+        .overall-summary {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .summary-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .stat-box {
+            text-align: center;
+            flex: 1;
+            padding: 15px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .graph-legend {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+        }
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="parent-info">
+                <div class="parent-avatar">MJ</div>
+                <div>
+                    <h2>Michael Johnson</h2>
+                    <p>Parent</p>
+                </div>
+            </div>
+            <div>
+                <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <div class="dashboard-section">
+            <div class="student-selector">
+                <div class="student-avatar">AJ</div>
+                <select class="student-select" id="studentSelect">
+                    <option value="alex">Alex Johnson - 1st Sem Engineering</option>
+                    <option value="emily">Emily Johnson - 2nd Sem Engineering</option>
+                </select>
+            </div>
+
+            <div class="tab-navigation">
+                <div class="tab active" data-tab="overview">Overview</div>
+                <div class="tab" data-tab="attendance">Attendance</div>
+                <div class="tab" data-tab="marks">Academic Performance</div>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview">
+                <h3>Student Overview</h3>
+                <div class="dashboard-grid">
+                    <div>
+                        <div class="attendance-card">
+                            <div>
+                                <h4>Overall Attendance</h4>
+                                <p>Current semester</p>
+                            </div>
+                            <div class="attendance-percentage">94%</div>
+                        </div>
+                        <div class="attendance-card">
+                            <div>
+                                <h4>Academic Average</h4>
+                                <p>All subjects</p>
+                            </div>
+                            <div class="attendance-percentage">86%</div>
+                        </div>
+                    </div>
+                    <div class="overall-summary">
+                        <h4>Summary</h4>
+                        <p>Alex is performing well in most subjects, with particular strengths in Engineering Mechanics and Applied Mathematics. Attendance has been consistently good throughout the semester.</p>
+                        <div class="summary-stats">
+                            <div class="stat-box">
+                                <div class="stat-value">3</div>
+                                <div>Subjects Above 90%</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">1</div>
+                                <div>Subjects Below 70%</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">5</div>
+                                <div>Absent Days</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container" style="margin-top: 40px;">
+                    <h4>Academic Progress (Last 6 Months)</h4>
+                    <div style="position: relative; height: 250px; margin-left: 40px;">
+                        <div class="chart-y-axis">
+                            <div class="chart-y-label">100%</div>
+                            <div class="chart-y-label">80%</div>
+                            <div class="chart-y-label">60%</div>
+                            <div class="chart-y-label">40%</div>
+                            <div class="chart-y-label">20%</div>
+                            <div class="chart-y-label">0%</div>
+                        </div>
+                        
+                        <!-- First Semester Engineering Subjects - Mumbai University -->
+                        <div class="chart-bar" style="left: 60px; height: 85%; background-color: #3498db;">
+                            <div class="chart-label">App. Math I</div>
+                        </div>
+                        <div class="chart-bar" style="left: 120px; height: 92%; background-color: #2ecc71;">
+                            <div class="chart-label">Eng. Mech</div>
+                        </div>
+                        <div class="chart-bar" style="left: 180px; height: 78%; background-color: #f39c12;">
+                            <div class="chart-label">BEE</div>
+                        </div>
+                        <div class="chart-bar" style="left: 240px; height: 65%; background-color: #e74c3c;">
+                            <div class="chart-label">Eng. Drawing</div>
+                        </div>
+                        <div class="chart-bar" style="left: 300px; height: 88%; background-color: #9b59b6;">
+                            <div class="chart-label">Comm Skills</div>
+                        </div>
+                        <div class="chart-bar" style="left: 360px; height: 75%; background-color: #1abc9c;">
+                            <div class="chart-label">Env. Studies</div>
+                        </div>
+                    </div>
+                    
+                    <div class="graph-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #3498db;"></div>
+                            <div>Applied Mathematics I</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #2ecc71;"></div>
+                            <div>Engineering Mechanics</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #f39c12;"></div>
+                            <div>Basic Electrical Engineering</div>
+                        </div>
+                    </div>
+                    <div class="graph-legend" style="margin-top: 5px;">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #e74c3c;"></div>
+                            <div>Engineering Drawing</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #9b59b6;"></div>
+                            <div>Communication Skills</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #1abc9c;"></div>
+                            <div>Environmental Studies</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Add table for marks preview -->
+                <div style="margin-top: 40px;">
+                    <h4>Subject Performance</h4>
+                    <table class="marks-table">
+                        <tr>
+                            <th>Subject</th>
+                            <th>Mid-Term</th>
+                            <th>Practical</th>
+                            <th>Overall</th>
+                        </tr>
+                        <tr>
+                            <td>Applied Mathematics I</td>
+                            <td class="mark average">82%</td>
+                            <td class="mark good">88%</td>
+                            <td class="mark good">85%</td>
+                        </tr>
+                        <tr>
+                            <td>Engineering Mechanics</td>
+                            <td class="mark good">90%</td>
+                            <td class="mark good">94%</td>
+                            <td class="mark good">92%</td>
+                        </tr>
+                        <tr>
+                            <td>Basic Electrical Engineering</td>
+                            <td class="mark average">78%</td>
+                            <td class="mark good">86%</td>
+                            <td class="mark average">78%</td>
+                        </tr>
+                        <tr>
+                            <td>Engineering Drawing</td>
+                            <td class="mark poor">62%</td>
+                            <td class="mark average">72%</td>
+                            <td class="mark poor">65%</td>
+                        </tr>
+                        <tr>
+                            <td>Communication Skills</td>
+                            <td class="mark good">90%</td>
+                            <td class="mark good">94%</td>
+                            <td class="mark good">88%</td>
+                        </tr>
+                        <tr>
+                            <td>Environmental Studies</td>
+                            <td class="mark average">72%</td>
+                            <td class="mark average">78%</td>
+                            <td class="mark average">75%</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

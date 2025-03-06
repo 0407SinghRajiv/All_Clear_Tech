@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mumbai University Engineering Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+        .student-info {
+            display: flex;
+            align-items: center;
+        }
+        .student-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .dashboard-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .btn {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-secondary {
+            background-color: #95a5a6;
+        }
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        .test-list {
+            list-style: none;
+            padding: 0;
+        }
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+        .test-subject {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .quote {
+            font-style: italic;
+            color: #7f8c8d;
+            margin: 5px 0;
+        }
+        .test-interface {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question-number {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        .question {
+            font-size: 18px;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .option {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        .option:hover {
+            background-color: #f8f9fa;
+            border-color: #3498db;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .progress {
+            height: 100%;
+            background-color: #3498db;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .strength-weakness-section {
+            padding: 20px 0;
+        }
+        .strength, .weakness {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .strength {
+            border-left: 4px solid #2ecc71;
+        }
+        .weakness {
+            border-left: 4px solid #e74c3c;
+        }
+        .test-result {
+            display: none;
+            text-align: center;
+            padding: 30px 0;
+        }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+        }
+        .score-percentage {
+            font-size: 36px;
+            font-weight: bold;
+        }
+        .result-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+            margin-top: 30px;
+        }
+        .recent-performance {
+            margin-top: 20px;
+        }
+        .performance-graph {
+            height: 250px;
+            margin-top: 20px;
+            position: relative;
+        }
+        .graph-bar {
+            position: absolute;
+            bottom: 0;
+            width: 60px;
+            background-color: #3498db;
+            border-radius: 5px 5px 0 0;
+            transition: height 0.5s;
+        }
+        .graph-bar:hover {
+            background-color: #2980b9;
+        }
+        .graph-label {
+            position: absolute;
+            bottom: -25px;
+            text-align: center;
+            width: 60px;
+        }
+        .active-tab {
+            border-bottom: 3px solid #3498db;
+        }
+        #copy-alert {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #e74c3c;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .semester-header {
+            background-color: #f1f9ff;
+            padding: 10px;
+            margin: 15px 0 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="copy-alert">Please do not copy exam questions!</div>
+    <div class="container">
+        <header>
+            <div class="student-info">
+                <div class="student-avatar">AJ</div>
+                <div>
+                    <h2>Alex Johnson</h2>
+                    <p>First Year Engineering</p>
+                </div>
+            </div>
+            <div>
+                <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <!-- Main Dashboard -->
+        <div id="mainDashboard">
+            <div class="dashboard-grid">
+                <!-- Available Tests Section -->
+                <div class="dashboard-section">
+                    <h3>Available Tests</h3>
+                    <p>Select a test to begin:</p>
+                    
+                    <div class="semester-header">First Semester</div>
+                    <ul class="test-list">
+                        <li class="test-item">
+                            <div>
+                                <div class="test-subject">Applied Mathematics I</div>
+                                <div class="quote">"Mathematics is the language in which God has written the universe." - Galileo</div>
+                                <div>20 questions • 30 minutes</div>
+                            </div>
+                            <button class="btn" onclick="startTest('AppliedMathematicsI')">Start Test</button>
+                        </li>
+                        <li class="test-item">
+                            <div>
+                                <div class="test-subject">Applied Physics I</div>
+                                <div class="quote">"Look deep into nature, and then you will understand everything better." - Einstein</div>
+                                <div>25 questions • 40 minutes</div>
+                            </div>
+                            <button class="btn" onclick="startTest('AppliedPhysicsI')">Start Test</button>
+                        </li>
+                        <li class="test-item">
+                            <div>
+                                <div class="test-subject">Applied Chemistry I</div>
+                                <div class="quote">"Chemistry is the bridge between physics and biology." - Linus Pauling</div>
+                                <div>30 questions • 45 minutes</div>
+                            </div>
+                            <button class="btn" onclick="startTest('AppliedChemistryI')">Start Test</button>
+                        </li>
+                    </ul>
+                    
+                    <div class="semester-header">Second Semester</div>
+                    <ul class="test-list">
+                        <li class="test-item">
+                            <div>
+                                <div class="test-subject">Applied Mathematics II</div>
+                                <div class="quote">"Pure mathematics is, in its way, the poetry of logical ideas." - Einstein</div>
+                                <div>20 questions • 30 minutes</div>
+                            </div>
+                            <button class="btn" onclick="startTest('AppliedMathematicsII')">Start Test</button>
+                        </li>
+                        <li class="test-item">
+                            <div>
+                                <div class="test-subject">Applied Physics II</div>
+                                <div class="quote">"The universe is made of stories, not atoms." - Muriel Rukeyser</div>
+                                <div>25 questions • 40 minutes</div>
+                            </div>
+                            <button class="btn" onclick="startTest('AppliedPhysicsII')">Start Test</button>
+                        </li>
+                        <li class="test-item">
+                            <div>
+                                <div class="test-subject">Engineering Drawing</div>
+                                <div class="quote">"Drawing is the honesty of the art." - Salvador Dali</div>
+                                <div>30 questions • 45 minutes</div>
+                            </div>
+                            <button class="btn" onclick="startTest('EngineeringDrawing')">Start Test</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Recent Performance -->
+                <div class="dashboard-section">
+                    <h3>Recent Performance</h3>
+                    <div class="recent-performance">
+                        <div class="performance-graph">
+                            <div class="graph-bar" style="left: 40px; height: 170px;"></div>
+                            <div class="graph-label" style="left: 40px;">Maths I</div>
+                            
+                            <div class="graph-bar" style="left: 140px; height: 200px;"></div>
+                            <div class="graph-label" style="left: 140px;">Physics I</div>
+                            
+                            <div class="graph-bar" style="left: 240px; height: 140px;"></div>
+                            <div class="graph-label" style="left: 240px;">Chem I</div>
+                            
+                            <div class="graph-bar" style="left: 340px; height: 180px;"></div>
+                            <div class="graph-label" style="left: 340px;">Maths II</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strengths and Weaknesses -->
+            <div class="dashboard-section">
+                <h3>Your Analysis</h3>
+                <div class="dashboard-grid">
+                    <div>
+                        <h4>Strengths</h4>
+                        <div class="strength-weakness-section">
+                            <div class="strength">Calculus</div>
+                            <div class="strength">Thermodynamics</div>
+                            <div class="strength">Organic Chemistry</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Areas for Improvement</h4>
+                        <div class="strength-weakness-section">
+                            <div class="weakness">Complex Numbers</div>
+                            <div class="weakness">Optics</div>
+                            <div class="weakness">Isometric Projections</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Interface -->
+        <div id="testInterface" class="test-interface">
+            <div class="question-number">Question <span id="currentQuestionNum">1</span> of <span id="totalQuestions">20</span></div>
+            <div class="progress-bar">
+                <div id="progressBar" class="progress"></div>
+            </div>
+            <div id="questionText" class="question">What is the capital of France?</div>
+            <div id="options" class="options">
+                <div class="option" onclick="selectAnswer(0)">Berlin</div>
+                <div class="option" onclick="selectAnswer(1)">London</div>
+                <div class="option" onclick="selectAnswer(2)">Paris</div>
+                <div class="option" onclick="selectAnswer(3)">Madrid</div>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <button id="prevBtn" class="btn btn-secondary" onclick="previousQuestion()">Previous</button>
+                <button id="nextBtn" class="btn" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div id="testResults" class="test-result">
+            <h2>Test Completed!</h2>
+            <div class="score-circle">
+                <div class="score-percentage">85%</div>
+                <div>Score</div>
+            </div>
+            <p>You answered 17 out of 20 questions correctly.</p>
+            
+            <div class="result-details">
+                <div>
+                    <h3>Strengths Identified</h3>
+                    <div class="strength-weakness-section">
+                        <div class="strength">Algebraic Equations</div>
+                        <div class="strength">Probability Concepts</div>
+                    </div>
+                </div>
+                <div>
+                    <h3>Areas to Review</h3>
+                    <div class="strength-weakness-section">
+                        <div class="weakness">Geometry Formulas</div>
+                        <div class="weakness">Complex Fractions</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-success" style="margin-top: 30px;" onclick="returnToDashboard()">Return to Dashboard</button>
+        </div>
+    </div>
+
+    <script>
+        // Test data
+        const tests = {
+            AppliedMathematicsI: {
+                subject: "Applied Mathematics I",
+                questions: [
+                    {
+                        question: "What is the derivative of e^x?",
+                        options: ["e^x", "x·e^x", "1/e^x", "0"],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "Solve the differential equation dy/dx = 2x.",
+                        options: ["y = x^2", "y = x^2 + C", "y = 2x", "y = 2x + C"],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Find the value of ∫(0 to π) sin(x) dx.",
+                        options: ["0", "1", "2", "π"],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "What is the rank of a 3×3 identity matrix?",
+                        options: ["0", "1", "2", "3"],
+                        correctAnswer: 3
+                    },
+                    {
+                        question: "If z = 3 + 4i, what is |z|?",
+                        options: ["5", "7", "1", "25"],
+                        correctAnswer: 0
+                    }
+                ],
+                total: 5
+            },
+            AppliedPhysicsI: {
+                subject: "Applied Physics I",
+                questions: [
+                    {
+                        question: "Which of Newton's laws states that 'For every action, there is an equal and opposite reaction'?",
+                        options: ["First law", "Second law", "Third law", "Fourth law"],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Which of the following is a unit of energy?",
+                        options: ["Newton", "Tesla", "Joule", "Pascal"],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "What is the SI unit of electric current?",
+                        options: ["Volt", "Ampere", "Ohm", "Coulomb"],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What phenomenon explains the bending of light when it passes from one medium to another?",
+                        options: ["Diffraction", "Refraction", "Reflection", "Dispersion"],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What is the acceleration due to gravity on Earth's surface (approximately)?",
+                        options: ["9.8 m/s²", "6.67 m/s²", "3.14 m/s²", "32 m/s²"],
+                        correctAnswer: 0
+                    }
+                ],
+                total: 5
+            },
+            AppliedChemistryI: {
+                subject: "Applied Chemistry I",
+                questions: [
+                    {
+                        question: "What is the chemical formula for water?",
+                        options: ["H2O", "CO2", "NaCl", "CH4"],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "Which of the following is an alkali metal?",
+                        options: ["Calcium", "Sodium", "Aluminum", "Iron"],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What is the pH of a neutral solution at 25°C?",
+                        options: ["0", "5", "7", "14"],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Which of the following is an organic compound?",
+                        options: ["NaCl", "CO2", "CH3COOH", "H2SO4"],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "The process of converting a solid directly to gas is called:",
+                        options: ["Sublimation", "Evaporation", "Condensation", "Melting"],
+                        correctAnswer: 0
+                    }
+                ],
+                total: 5
+            },
+            AppliedMathematicsII: {
+                subject: "Applied Mathematics II",
+                questions: [
+                    {
+                        question: "What is the Laplace transform of the function f(t) = e^at?",
+                        options: ["1/(s-a)", "1/(s+a)", "a/(s-1)", "s/(s-a)"],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "Solve the partial differential equation: ∂u/∂t = α²(∂²u/∂x²).",
+                        options: ["Wave equation", "Heat equation", "Laplace equation", "Poisson equation"],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What is the Z-transform of the sequence {1, 2, 3, 4}?",
+                        options: ["z/(z-1)", "z/(z-1)²", "z(1+2z⁻¹+3z⁻²+4z⁻³)", "z/(1-z⁻¹)"],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "In numerical methods, which of these is NOT a direct method for solving linear equations?",
+                        options: ["Gaussian elimination", "LU decomposition", "Newton-Raphson method", "Cramer's rule"],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Which of the following describes a probability distribution with mean μ and variance σ²?",
+                        options: ["Normal distribution", "Binomial distribution", "Poisson distribution", "Exponential distribution"],
+                        correctAnswer: 0
+                    }
+                ],
+                total: 5
+            },
+            AppliedPhysicsII: {
+                subject: "Applied Physics II",
+                questions: [
+                    {
+                        question: "Which law of thermodynamics states that energy cannot be created or destroyed?",
+                        options: ["First law", "Second law", "Third law", "Zeroth law"],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "What is the SI unit of magnetic flux density?",
+                        options: ["Weber", "Tesla", "Henry", "Farad"],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which of the following is a semiconductor material?",
+                        options: ["Gold", "Silicon", "Copper", "Aluminum"],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What is the wavelength of visible light?",
+                        options: ["1-10 nm", "400-700 nm", "1-10 μm", "1-10 mm"],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which phenomenon explains the splitting of white light into its component colors?",
+                        options: ["Reflection", "Diffraction", "Dispersion", "Interference"],
+                        correctAnswer: 2
+                    }
+                ],
+                total: 5
+            },
+            EngineeringDrawing: {
+                subject: "Engineering Drawing",
+                questions: [
+                    {
+                        question: "Which projection method shows the object as seen by an observer?",
+                        options: ["Perspective projection", "Orthographic projection", "Isometric projection", "Oblique projection"],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "In orthographic projection, how many principal views are generally considered?",
+                        options: ["Two", "Three", "Four", "Six"],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which of the following is NOT a type of section in engineering drawing?",
+                        options: ["Full section", "Half section", "Offset section", "Diagonal section"],
+                        correctAnswer: 3
+                    },
+                    {
+                        question: "What is the angle between axes in an isometric drawing?",
+                        options: ["90 degrees", "120 degrees", "45 degrees", "60 degrees"],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which line type is used for hidden edges in engineering drawings?",
+                        options: ["Continuous thick line", "Continuous thin line", "Dashed line", "Chain line"],
+                        correctAnswer: 2
+                    }
+                ],
+                total: 5
+            }
+        };
+
+        let currentTest = null;
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        
+        // Add copy prevention
+        document.addEventListener('DOMContentLoaded', function() {
+            // Prevent context menu (right-click)
+            document.addEventListener('contextmenu', function(e) {
+                if (document.getElementById('testInterface').style.display === 'block') {
+                    e.preventDefault();
+                    showCopyAlert();
+                }
+            });
+            
+            // Prevent copy
+            document.addEventListener('copy', function(e) {
+                if (document.getElementById('testInterface').style.display === 'block') {
+                    e.preventDefault();
+                    showCopyAlert();
+                }
+            });
+            
+            // Prevent cut
+            document.addEventListener('cut', function(e) {
+                if (document.getElementById('testInterface').style.display === 'block') {
+                    e.preventDefault();
+                    showCopyAlert();
+                }
+            });
+            
+            // Prevent keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (document.getElementById('testInterface').style.display === 'block') {
+                    // Ctrl+C, Ctrl+X
+                    if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x')) {
+                        e.preventDefault();
+                        showCopyAlert();
+                    }
+                    
+                    // PrintScreen
+                    if (e.key === 'PrintScreen') {
+                        e.preventDefault();
+                        showCopyAlert();
+                    }
+                }
+            });
+        });
+        
+        // Show copy alert
+        function showCopyAlert() {
+            const alert = document.getElementById('copy-alert');
+            alert.style.display = 'block';
+            
+            setTimeout(function() {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Start a test
+        function startTest(subject) {
+            currentTest = tests[subject];
+            currentQuestionIndex = 0;
+            userAnswers = new Array(currentTest.questions.length).fill(null);
+            
+            // Hide dashboard, show test interface
+            document.getElementById('mainDashboard').style.display = 'none';
+            document.getElementById('testInterface').style.display = 'block';
+            document.getElementById('testResults').style.display = 'none';
+            
+            // Update UI
+            document.getElementById('totalQuestions').textContent = currentTest.total;
+            updateQuestion();
+        }
+        
+        // Update the current question
+        function updateQuestion() {
+            const question = currentTest.questions[currentQuestionIndex];
+            document.getElementById('currentQuestionNum').textContent = currentQuestionIndex + 1;
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Set options
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                if (userAnswers[currentQuestionIndex] === index) {
+                    optionElement.className += ' active';
+                    optionElement.style.backgroundColor = '#e8f4fc';
+                    optionElement.style.borderColor = '#3498db';
+                }
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Update progress bar
+            const progress = ((currentQuestionIndex + 1) / currentTest.total) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            document.getElementById('nextBtn').textContent = currentQuestionIndex === currentTest.total - 1 ? 'Finish' : 'Next';
+        }
+        
+        // Select an answer
+        function selectAnswer(optionIndex) {
+            userAnswers[currentQuestionIndex] = optionIndex;
+            
+            // If last question, show finish button
+            if (currentQuestionIndex === currentTest.total - 1) {
+                document.getElementById('nextBtn').textContent = 'Finish';
+            }
+            updateQuestion();
+        }
+        
+        // Move to next question
+        function nextQuestion() {
+            if (userAnswers[currentQuestionIndex] === null) {
+                alert('Please select an answer before proceeding.');
+                return;
+            }
+            
+            if (currentQuestionIndex < currentTest.total - 1) {
+                currentQuestionIndex++;
+                updateQuestion();
+            } else {
+                finishTest();
+            }
+        }
+        
+        // Move to previous question
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                updateQuestion();
+            }
+        }
+        
+        // Finish test
+        function finishTest() {
+            // Calculate results
+            let correctAnswers = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer === currentTest.questions[index].correctAnswer) {
+                    correctAnswers++;
+                }
+            });
+            
+            const scorePercentage = Math.round((correctAnswers / currentTest.total) * 100);
+            
+            // Hide test interface, show results
+            document.getElementById('testInterface').style.display = 'none';
+            document.getElementById('testResults').style.display = 'block';
+            
+            // Update results UI
+            document.querySelector('.score-percentage').textContent = `${scorePercentage}%`;
+            document.querySelector('#testResults p').textContent = `You answered ${correctAnswers} out of ${currentTest.total} questions correctly.`;
+            
+            // Customize strengths and weaknesses based on subject
+            const strengthsSection = document.querySelector('#testResults .strength-weakness-section:first-of-type');
+            const weaknessesSection = document.querySelector('#testResults .strength-weakness-section:last-of-type');
+            
+            strengthsSection.innerHTML = '';
+            weaknessesSection.innerHTML = '';
+            
+            // Add subject-specific strengths and weaknesses
+            if (currentTest.subject.includes('Mathematics')) {
+                strengthsSection.innerHTML += '<div class="strength">Calculus Concepts</div>';
+                strengthsSection.innerHTML += '<div class="strength">Algebraic Manipulation</div>';
+                weaknessesSection.innerHTML += '<div class="weakness">Complex Variables</div>';
+                weaknessesSection.innerHTML += '<div class="weakness">Differential Equations</div>';
+            } else if (currentTest.subject.includes('Physics')) {
+                strengthsSection.innerHTML += '<div class="strength">Theoretical Concepts</div>';
+                strengthsSection.innerHTML += '<div class="strength">Problem Solving</div>';
+                weaknessesSection.innerHTML += '<div class="weakness">Numerical Analysis</div>';
+                weaknessesSection.innerHTML += '<div class="weakness">Applied Problems</div>';
+            } else if (currentTest.subject.includes('Chemistry')) {
+                strengthsSection.innerHTML += '<div class="strength">Chemical Formulas</div>';
+                strengthsSection.innerHTML += '<div class="strength">Periodic Properties</div>';
+                weaknessesSection.innerHTML += '<div class="weakness">Reaction Mechanisms</div>';
+                weaknessesSection.innerHTML += '<div class="weakness">Equilibrium Calculations</div>';
+            } else if (currentTest.subject.includes('Drawing')) {
+                strengthsSection.innerHTML += '<div class="strength">Projection Concepts</div>';
+                strengthsSection.innerHTML += '<div class="strength">Engineering Standards</div>';
+                weaknessesSection.innerHTML += '<div class="weakness">Isometric Views</div>';
+                weaknessesSection.innerHTML += '<div class="weakness">Technical Detailing</div>';
+            }
+        }
+        
+        // Return to dashboard
+        function returnToDashboard() {
+            document.getElementById('testResults').style.display = 'none';
+            document.getElementById('mainDashboard').style.display = 'block';
+            
+            // Update performance graph with new result if needed
+            // This would typically connect to a backend to save results
+            
+            // For demonstration, we'll animate the graphs to make it feel like they updated
+            const bars = document.querySelectorAll('.graph-bar');
+            bars.forEach(bar => {
+                const currentHeight = parseInt(bar.style.height);
+                const newHeight = Math.min(Math.max(currentHeight + Math.random() * 30 - 15, 100), 230);
+                
+                // Animate height change
+                bar.style.transition = 'height 1s';
+                bar.style.height = `${newHeight}px`;
+            });
+        }
+        
+        // Logout function
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('You have been logged out successfully.');
+                // In a real app, this would redirect to login page
+                // window.location.href = 'login.html';
+            }
+        });
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate graph bars on load
+            setTimeout(() => {
+                const bars = document.querySelectorAll('.graph-bar');
+                bars.forEach(bar => {
+                    bar.style.transition = 'height 1s';
+                });
+            }, 100);
+            
+            // Add some interactivity to strength/weakness items
+            const allItems = document.querySelectorAll('.strength, .weakness');
+            allItems.forEach(item => {
+                item.addEventListener('mouseover', function() {
+                    this.style.transform = 'translateX(5px)';
+                    this.style.transition = 'transform 0.3s';
+                });
+                
+                item.addEventListener('mouseout', function() {
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+        });
+        
+        // Add timing functionality for tests
+        let testTimer;
+        let timeRemaining;
+        
+        function startTestTimer(minutes) {
+            // Convert minutes to milliseconds
+            timeRemaining = minutes * 60 * 1000;
+            const startTime = Date.now();
+            
+            // Create timer element if it doesn't exist
+            if (!document.getElementById('testTimer')) {
+                const timerElement = document.createElement('div');
+                timerElement.id = 'testTimer';
+                timerElement.style.position = 'fixed';
+                timerElement.style.top = '10px';
+                timerElement.style.right = '10px';
+                timerElement.style.backgroundColor = '#fff';
+                timerElement.style.padding = '10px';
+                timerElement.style.borderRadius = '5px';
+                timerElement.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                timerElement.style.fontWeight = 'bold';
+                document.body.appendChild(timerElement);
+            }
+            
+            // Update timer every second
+            testTimer = setInterval(() => {
+                const elapsedTime = Date.now() - startTime;
+                timeRemaining = Math.max(0, minutes * 60 * 1000 - elapsedTime);
+                
+                // Format time remaining
+                const minutesLeft = Math.floor(timeRemaining / 60000);
+                const secondsLeft = Math.floor((timeRemaining % 60000) / 1000);
+                
+                document.getElementById('testTimer').textContent = 
+                    `Time Remaining: ${minutesLeft}:${secondsLeft < 10 ? '0' : ''}${secondsLeft}`;
+                
+                // End test if time runs out
+                if (timeRemaining <= 0) {
+                    clearInterval(testTimer);
+                    alert('Time is up! Your test will be submitted now.');
+                    finishTest();
+                }
+            }, 1000);
+        }
+        
+        // Update the startTest function to include timer
+        const originalStartTest = startTest;
+        startTest = function(subject) {
+            originalStartTest(subject);
+            
+            // Set timer based on test subject
+            let testDuration = 30; // Default 30 minutes
+            if (subject.includes('Physics')) {
+                testDuration = 40;
+            } else if (subject.includes('Chemistry') || subject.includes('Drawing')) {
+                testDuration = 45;
+            }
+            
+            startTestTimer(testDuration);
+        };
+        
+        // Clear timer when test is finished
+        const originalFinishTest = finishTest;
+        finishTest = function() {
+            clearInterval(testTimer);
+            if (document.getElementById('testTimer')) {
+                document.getElementById('testTimer').remove();
+            }
+            originalFinishTest();
+        };
+        
+        // Add some additional UI improvements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects for test items
+            const testItems = document.querySelectorAll('.test-item');
+            testItems.forEach(item => {
+                item.addEventListener('mouseover', function() {
+                    this.style.backgroundColor = '#f8f9fa';
+                    this.style.transition = 'background-color 0.3s';
+                });
+                
+                item.addEventListener('mouseout', function() {
+                    this.style.backgroundColor = '';
+                });
+            });
+            
+            // Add keyboard navigation for test questions
+            document.addEventListener('keydown', function(e) {
+                if (document.getElementById('testInterface').style.display === 'block') {
+                    if (e.key === 'ArrowRight' || e.key === 'n') {
+                        // Next question
+                        if (currentQuestionIndex < currentTest.total - 1 && userAnswers[currentQuestionIndex] !== null) {
+                            nextQuestion();
+                        }
+                    } else if (e.key === 'ArrowLeft' || e.key === 'p') {
+                        // Previous question
+                        if (currentQuestionIndex > 0) {
+                            previousQuestion();
+                        }
+                    } else if (e.key >= '1' && e.key <= '4') {
+                        // Select answer using number keys
+                        const answerIndex = parseInt(e.key) - 1;
+                        if (answerIndex >= 0 && answerIndex < currentTest.questions[currentQuestionIndex].options.length) {
+                            selectAnswer(answerIndex);
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
