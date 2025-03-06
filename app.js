@@ -264,21 +264,33 @@ studentSelect.addEventListener('change', async (e) => {
 
 saveUpdateBtn.addEventListener('click', async () => {
     const studentId = studentSelect.value;
-    const attendance = parseInt(document.getElementById('updateAttendance').value);
-    const marks = parseInt(document.getElementById('updateMarks').value);
+    const attendance = parseFloat(document.getElementById('updateAttendance').value);
+    const marks = parseFloat(document.getElementById('updateMarks').value);
     const status = document.getElementById('updateStatus').value;
-    
+
     try {
+        // Send data to FastAPI for dropout prediction
+        const response = await fetch("http://127.0.0.1:8000/predict/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ attendance, marks })
+        });
+
+        const result = await response.json();
+        const dropoutRisk = result.dropout_risk;
+
+        // Update Firestore with dropout risk
         await db.collection('students').doc(studentId).update({
             attendance,
             marks,
-            status
+            status,
+            dropoutRisk
         });
-        
-        alert('Student record updated successfully!');
+
+        alert(`Student record updated! Dropout Risk: ${dropoutRisk}`);
         updateForm.classList.add('hidden');
         studentSelect.value = '';
-        
+
         // Reload dashboard stats
         const user = auth.currentUser;
         loadDashboardStats(user.uid);
@@ -286,6 +298,7 @@ saveUpdateBtn.addEventListener('click', async () => {
         alert('Error updating student record: ' + error.message);
     }
 });
+
 
 cancelUpdateBtn.addEventListener('click', () => {
     updateForm.classList.add('hidden');
